@@ -1,5 +1,6 @@
 import sys
 from networksecurity.logging import logger
+
 class NetworkSecurityException(Exception):
     """
     Base exception class for Network Security module.

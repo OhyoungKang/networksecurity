@@ -8,7 +8,7 @@ from networksecurity.logging.logger import logging
 from networksecurity.entity.config_entity import ModelTrainerConfig
 from networksecurity.entity.artifact_entity import DataTransformationArtifact, ModelTrainerArtifact
 
-from networksecurity.utils.main_utils.utils import save_object, load_object, load_numpy_array_data
+from networksecurity.utils.main_utils.utils import save_object, load_object, load_numpy_array_data, evaluate_models
 from networksecurity.utils.ml_utils.model.estimator import NetworkModel
 from networksecurity.utils.ml_utils.metric.classification_metric import get_classification_score
 
@@ -22,8 +22,10 @@ from sklearn.ensemble import (
     RandomForestClassifier,
 )
 
-from networksecurity.utils.main_utils.utils import evaluate_models
 import mlflow
+
+import dagshub
+dagshub.init(repo_owner='oykang64', repo_name='networksecurity', mlflow=True)
 
 
 class ModelTrainer:
@@ -106,6 +108,9 @@ class ModelTrainer:
 
         Network_Model = NetworkModel(preprocessor=preprocessor, model=best_model)
         save_object(self.model_trainer_config.trained_model_file_path, obj=Network_Model)
+
+        ## model pusher
+        save_object("final_model/model.pkl", best_model)
 
         ## Model Trainer Artifact
         model_trainer_artifact = ModelTrainerArtifact(trained_model_file_path=self.model_trainer_config.trained_model_file_path,

@@ -51,7 +51,7 @@ DATA_TRANSFORMATION_TRANSFORMED_OBJECT_DIR: str = "transformed_object"
 PREPROCESSING_OBJECT_FILE_NAME: str = "preprocessing.pkl"
 
 ## kkn imputer to replace nan values
-DATA_TRASFORMATION_IMPUTER_PARAMS: dict = {
+DATA_TRANSFORMATION_IMPUTER_PARAMS: dict = {
     "missing_values": np.nan,
     "n_neighbors": 3,
     "weights": "uniform",

@@ -6,7 +6,7 @@ from sklearn.impute import KNNImputer
 from sklearn.pipeline import Pipeline
 
 from networksecurity.constants.training_pipeline import TARGET_COLUMN
-from networksecurity.constants.training_pipeline import DATA_TRASFORMATION_IMPUTER_PARAMS
+from networksecurity.constants.training_pipeline import DATA_TRANSFORMATION_IMPUTER_PARAMS
 from networksecurity.entity.artifact_entity import DataValidationArtifact, DataTransformationArtifact
 from networksecurity.entity.config_entity import DataTransformationConfig
 
@@ -45,7 +45,7 @@ class DataTransformation:
         """
         logging.info("Entered get_data_transformer_object method of DataTransformation class")
         try:
-            imputer: KNNImputer = KNNImputer(**DATA_TRASFORMATION_IMPUTER_PARAMS)
+            imputer: KNNImputer = KNNImputer(**DATA_TRANSFORMATION_IMPUTER_PARAMS)
             logging.info("Initialise KNNImputer with parameters specified in training_pipeline.py file")
             processor: Pipeline = Pipeline([("imputer", imputer)])
             return processor
@@ -77,10 +77,13 @@ class DataTransformation:
             train_arr = np.c_[transformed_input_train_feature, np.array(target_feature_train_df)]
             test_arr = np.c_[transformed_input_test_feature, np.array(target_feature_test_df)]
 
-            ## Save numpy array data
+            ## save numpy array data
             save_numpy_array_data(file_path=self.data_transformation_config.transformed_train_file_path, array=train_arr)
             save_numpy_array_data(file_path=self.data_transformation_config.transformed_test_file_path, array=test_arr)
             save_object(self.data_transformation_config.transformed_object_file_path, preporcessor_object)
+
+            ## model pusher
+            save_object("final_model/preprocessing.pkl", preporcessor_object)
 
             ## preparing artifacts
             data_transformation_artifact = DataTransformationArtifact(

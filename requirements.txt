@@ -8,5 +8,8 @@ scikit-learn
 scipy-stubs
 mlflow
 pyyaml
+dagshub
+fastapi
+uvicorn
 
 -e .

@@ -12,3 +12,5 @@ dist/
 
 logs/
 artifacts/
+mlruns/
+mlflow.db

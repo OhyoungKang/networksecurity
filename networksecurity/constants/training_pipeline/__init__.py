@@ -1,3 +1,5 @@
+# NETWORKSECURITY/networksecurity/constants/training_pipeline/__init__.py
+
 import os
 import sys
 import numpy as np
@@ -19,6 +21,8 @@ SCHEMA_FILE_PATH = os.path.join("data_schema", "schema.yaml")
 
 SAVED_MODEL_DIR = os.path.join("saved_models")
 MODEL_FILE_NAME = "model.pkl"
+
+TRAINING_BUCKET_NAME = "ohwhy-ml-storage-2026"
 
 
 """

@@ -1,4 +1,4 @@
-#NETWORKSECURITY/networksecurity/pipeline/training_pipeline.py
+# NETWORKSECURITY/networksecurity/pipeline/training_pipeline.py
 
 import os
 import sys

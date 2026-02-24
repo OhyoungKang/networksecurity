@@ -1,4 +1,4 @@
-### Network Security Project – Phishing Detection System
+# Network Security Project – Phishing Detection System
 
 ## Overview:
 

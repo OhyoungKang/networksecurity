@@ -24,9 +24,6 @@ from sklearn.ensemble import (
 
 import mlflow
 
-import dagshub
-dagshub.init(repo_owner='oykang64', repo_name='networksecurity', mlflow=True)
-
 
 class ModelTrainer:
     def __init__(self, data_transformation_artifact:DataTransformationArtifact, model_trainer_config:ModelTrainerConfig):
@@ -48,6 +45,9 @@ class ModelTrainer:
             mlflow.sklearn.log_model(best_model,"model")
 
     def train_model(self,x_train,y_train,x_test,y_test):
+        import dagshub
+        dagshub.init(repo_owner='oykang64', repo_name='networksecurity', mlflow=True)
+
         models = {
             "LogisticRegression": LogisticRegression(verbose=1),
             "DecisionTreeClassifier": DecisionTreeClassifier(),

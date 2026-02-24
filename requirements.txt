@@ -11,5 +11,6 @@ pyyaml
 dagshub
 fastapi
 uvicorn
+python-multipart
 
--e .
+# -e .

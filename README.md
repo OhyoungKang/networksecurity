@@ -55,6 +55,22 @@ DevOps / Cloud
 	•	AWS ECR
 	•	AWS EC2
 
+## Health Endpoints (Monitoring)
+
+The service exposes multiple health endpoints for runtime monitoring and deployment validation.
+
+• GET /health  
+Basic service status check
+
+• GET /health/live  
+Liveness probe — verifies that the API process is running
+
+• GET /health/ready  
+Readiness probe — checks MongoDB connectivity and service dependencies
+
+• GET /health/system  
+System resource monitoring (CPU, memory, disk usage)
+
 ## Deployment Pipeline
 	1.	Code pushed to the main branch
 	2.	GitHub Actions builds a Docker image

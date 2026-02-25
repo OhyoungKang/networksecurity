@@ -82,3 +82,15 @@ System resource monitoring (CPU, memory, disk usage)
 
 Ohyoung Kang
 AI / MLOps Engineer
+
+GitHub: https://github.com/OhyoungKang
+LinkedIn: https://www.linkedin.com/in/ohyoung-kang-6058bb240/
+
+## Acknowledgement
+
+This project was originally inspired by an online coursework example.
+
+The implementation was extensively re-engineered into a production-style 
+MLOps system with automated CI/CD pipelines, AWS-based container deployment, 
+health monitoring endpoints, and operational logging designed 
+for real-world deployment scenarios.

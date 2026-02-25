@@ -3,6 +3,7 @@
 import sys
 import os
 import certifi
+import psutil
 
 ca = certifi.where()
 
@@ -10,7 +11,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 mongo_db_url = os.getenv("MONGODB_URL_KEY")
-print(mongo_db_url)
+# print(mongo_db_url)
 
 import pymongo
 from networksecurity.exception.exception import NetworkSecurityException
@@ -18,9 +19,10 @@ from networksecurity.logging.logger import logging
 from networksecurity.pipeline.training_pipeline import TrainingPipeline
 
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi import FastAPI, File, UploadFile, Request
+from fastapi import FastAPI, File, UploadFile, Request, status
 from uvicorn import run as app_run
-from fastapi.responses import Response
+from fastapi.responses import Response, JSONResponse
+from contextlib import asynccontextmanager
 from starlette.responses import RedirectResponse
 import pandas as pd
 
@@ -33,7 +35,19 @@ client = pymongo.MongoClient(mongo_db_url, tlsCAFile=ca)
 database = client[DATA_INGESTION_DATABASE_NAME]
 collection = database[DATA_INGESTION_COLLECTION_NAME]
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    try:
+        app.state.network_model = NetworkModel(
+            preprocessor=load_object("final_model/preprocessing.pkl"),
+            model=load_object("final_model/model.pkl")
+        )
+        app.state.model_loaded = True
+    except:
+        app.state.model_loaded = False
+
+    yield
+app = FastAPI(lifespan=lifespan)
 origins = ["*"]
 
 app.add_middleware(
@@ -46,6 +60,41 @@ app.add_middleware(
 
 from fastapi.templating import Jinja2Templates
 templates = Jinja2Templates(directory="./templates")
+
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
+@app.get("/health/live")
+def live():
+    return {"status": "alive"}
+
+@app.get("/health/ready")
+def ready():
+    try:
+        client.admin.command("ping")
+        return {"status": "ready", "mongodb": "connected"}
+    except Exception:
+        return JSONResponse(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            content={"status": "not_ready", "mongodb": "down"}
+        )
+
+@app.get("/health/startup")
+def startup():
+    try:
+        return {"model_loaded": getattr(app.state, "model_loaded", False)}
+    except:
+        return {"model": "missing"}
+
+@app.get("/health/system")
+def system():
+    return {
+        "cpu": psutil.cpu_percent(),
+        "memory": psutil.virtual_memory().percent,
+        "disk": psutil.disk_usage('/').percent
+    }
 
 @app.get("/", tags=["authentication"])
 async def index():
@@ -63,20 +112,31 @@ async def train_route():
 @app.post("/predict")
 async def predict_route(request: Request,file: UploadFile = File(...)):
     try:
-        df = pd.read_csv(file.file)
+        logging.info(f"Predicting {file.filename}")
 
-        preprocessor = load_object("final_model/preprocessing.pkl")
-        final_model = load_object("final_model/model.pkl")
+        try:
+            df = pd.read_csv(file.file)
+        except Exception:
+            raise ValueError("Invalid CSV file")
 
-        network_model = NetworkModel(preprocessor=preprocessor,model=final_model)
-        print(df.iloc[0])
+        logging.info(f"Input shape: {df.shape}")
+
+        network_model = getattr(request.app.state, "network_model", None)
+
+        if network_model is None:
+            raise RuntimeError("Model not loaded")
+
+        if not df.empty:
+            logging.info(f"Input sample: {df.iloc[0].to_dict()}")
 
         y_pred = network_model.predict(df)
-        print(y_pred)
+
+        logging.info(f"Prediction done: {len(y_pred)} rows")
 
         df['predicted_column'] = y_pred
-        print(df['predicted_column'])
+        logging.info(f"Prediction completed. Rows={len(df)}")
 
+        os.makedirs("prediction_output", exist_ok=True)
         df.to_csv('prediction_output/output.csv')
 
         table_html = df.to_html(classes='table table-striped')
@@ -84,6 +144,7 @@ async def predict_route(request: Request,file: UploadFile = File(...)):
         return templates.TemplateResponse("table.html", {"request": request, "table": table_html})
 
     except Exception as e:
+        logging.exception(f"Prediction failed")
         raise NetworkSecurityException(e,sys)
 
 

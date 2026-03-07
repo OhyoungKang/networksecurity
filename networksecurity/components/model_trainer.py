@@ -46,7 +46,12 @@ class ModelTrainer:
 
     def train_model(self,x_train,y_train,x_test,y_test):
         import dagshub
-        dagshub.init(repo_owner='oykang64', repo_name='networksecurity', mlflow=True)
+        dagshub.init(
+            repo_owner="oykang64",
+            repo_name="networksecurity",
+            mlflow=True,
+            token=os.getenv("DAGSHUB_TOKEN")
+        )
 
         models = {
             "LogisticRegression": LogisticRegression(verbose=1),

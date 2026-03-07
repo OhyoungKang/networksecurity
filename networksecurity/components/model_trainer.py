@@ -49,8 +49,7 @@ class ModelTrainer:
         dagshub.init(
             repo_owner="oykang64",
             repo_name="networksecurity",
-            mlflow=True,
-            token=os.getenv("DAGSHUB_TOKEN")
+            mlflow=True
         )
 
         models = {

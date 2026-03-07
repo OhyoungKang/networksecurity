@@ -81,7 +81,7 @@ System resource monitoring (CPU, memory, disk usage)
 ## Author
 
 Ohyoung Kang
-AI / MLOps Engineer
+AI | MLOps Engineer | AI Infra Architect
 
 GitHub: https://github.com/OhyoungKang
 LinkedIn: https://www.linkedin.com/in/ohyoung-kang-6058bb240/

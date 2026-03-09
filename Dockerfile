@@ -2,7 +2,7 @@ FROM python:3.10-slim-bookworm
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y awscli
+RUN apt-get update
 
 COPY requirements.txt .
 

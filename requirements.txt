@@ -13,4 +13,5 @@ dagshub
 fastapi
 uvicorn
 python-multipart
+boto3
 

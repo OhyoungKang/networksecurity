@@ -1,3 +1,5 @@
+# NETWORKSECURITY/networksecurity/logging/logger.py
+
 import logging
 import os
 from datetime import datetime
@@ -14,3 +16,6 @@ logging.basicConfig(
     format="[ %(asctime)s ] %(lineno)d %(name)s - %(levelname)s - %(message)s",
     level=logging.INFO,
 )
+
+# stdout으로도 출력 (docker logs로 확인 가능, 컨테이너 내부에서 로그 파일로도 확인 가능)
+logging.getLogger().addHandler(logging.StreamHandler())

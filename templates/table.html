@@ -2,21 +2,64 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Data Table</title>
+    <title>Network Security - Phishing Detection</title>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h2 {
+            color: #333;
+        }
+        .summary {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .card {
+            padding: 14px 24px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: white;
+            box-shadow: 2px 2px 6px rgba(0,0,0,0.15);
+        }
+        .card.total    { background-color: #4a90d9; }
+        .card.phishing { background-color: #e74c3c; }
+        .card.safe     { background-color: #27ae60; }
         table {
             border-collapse: collapse;
-            width: 100%;
+            width: 100%;background-color: white;
         }
         th, td {
-            border: 1px solid black;
+            border: 1px solid #ccc;
             padding: 8px;
             text-align: left;
+            font-size: 0.9rem;
+        }
+        th {
+            background-color: #f0f0f0;
+            position: sticky;
+            top: 0;
+        }
+        .table-wrapper {
+            overflow-x: auto;
         }
     </style>
 </head>
 <body>
-    <h2>Predicted Data</h2>
-    {{ table | safe }}
+    <h2>Prediction Result</h2>
+    {% if summary %}
+    <div class="summary">
+        <div class="card total">전체: {{ summary.total }}건</div>
+        <div class="card phishing">🚨 피싱: {{ summary.phishing }}건</div>
+        <div class="card safe">✅ 정상: {{ summary.safe }}건</div>
+    </div>
+    {% endif %}
+
+    <div class="table-wrapper">
+        {{ table | safe }}
+    </div>
 </body>
 </html>

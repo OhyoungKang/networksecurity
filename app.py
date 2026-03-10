@@ -134,14 +134,37 @@ async def predict_route(request: Request,file: UploadFile = File(...)):
         logging.info(f"Prediction done: {len(y_pred)} rows")
 
         df['predicted_column'] = y_pred
+        df['Result'] = df['predicted_column'].apply(
+            lambda x: "🚨 PHISHING" if x == 1.0 else "✅ SAFE"
+        )
         logging.info(f"Prediction completed. Rows={len(df)}")
 
         os.makedirs("prediction_output", exist_ok=True)
         df.to_csv('prediction_output/output.csv')
 
-        table_html = df.to_html(classes='table table-striped')
+        total = len(df)
+        phishing_count = int((df['predicted_column'] == 1.0).sum())
+        safe_count = int((df['predicted_column'] == 0.0).sum())
 
-        return templates.TemplateResponse("table.html", {"request": request, "table": table_html})
+        def highlight_result(val):
+            color = "#ffcccc" if "PHISHING" in str(val) else "#ccffcc"
+            return f"background-color: {color}; font-weight: bold;"
+
+        styled_html = (
+            df.style
+            .map(highlight_result, subset=["Result"])
+            .to_html()
+        )
+
+        return templates.TemplateResponse("table.html", {
+            "request": request,
+            "table": styled_html,
+            "summary": {
+                "total": total,
+                "phishing": phishing_count,
+                "safe": safe_count,
+            },
+        })
 
     except Exception as e:
         logging.exception(f"Prediction failed")

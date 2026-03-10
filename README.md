@@ -12,10 +12,12 @@ The system is designed using production-style MLOps practices, focusing on repro
 	•	Experiment tracking using MLflow
 	•	Dataset versioning with DagsHub
 	•	REST inference API built with FastAPI
-	•	Docker-based containerized deployment
+	•	Docker-based containerized deployment with Docker
 	•	Automated CI/CD pipeline via GitHub Actions
 	•	Secure container registry using AWS ECR
-	•	Automated runtime deployment on AWS EC2 (self-hosted runner)
+	•	Automated runtime deployment on AWS EC2 self-hosted runner
+	•   Artifact synchronization with AWS S3 using boto3
+	
 
 ## System Architecture
 
@@ -54,6 +56,7 @@ DevOps / Cloud
 	•	GitHub Actions
 	•	AWS ECR
 	•	AWS EC2
+	•   AWS S3 (artifact and final_model storage)
 
 ## Health Endpoints (Monitoring)
 
@@ -88,9 +91,15 @@ LinkedIn: https://www.linkedin.com/in/ohyoung-kang-6058bb240/
 
 ## Acknowledgement
 
-This project was originally inspired by an online coursework example.
+This project was initially inspired by an online coursework example.
 
-The implementation was extensively re-engineered into a production-style 
-MLOps system with automated CI/CD pipelines, AWS-based container deployment, 
-health monitoring endpoints, and operational logging designed 
-for real-world deployment scenarios.
+The implementation was significantly extended and redesigned to demonstrate a production-oriented MLOps architecture, including:
+
+• automated CI/CD pipelines
+• containerized cloud deployment
+• experiment tracking with MLflow
+• dataset versioning via DagsHub
+• automated artifact management with AWS S3
+• operational monitoring and health endpoints
+
+The goal of this project is to showcase practical ML engineering and MLOps practices used in real-world deployments.

@@ -6,6 +6,8 @@ on:
       - main
     paths-ignore:
       - 'README.md'
+  # schedule:
+    # - cron: '0 0 * * *'  # 매일 자정(UTC) 자동 실행
 
 jobs:
   integration:

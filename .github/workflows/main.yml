@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Lint code
         run: echo "Linting repository"
@@ -29,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Utilities
         run: |
@@ -65,7 +65,7 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -78,18 +78,14 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Stop and remove previous containers if exists
-        run: docker rm -f networksecurity || true
-
-      - name: Clean previous images and containers
-        run: |
-          docker system prune -af
-          docker builder prune -af
-
       - name: Pull latest image
         run: |
           docker pull ${{ secrets.AWS_ECR_LOGIN_URI }}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
 
+      - name: Stop and remove previous containers if exists
+        run: |
+          docker stop networksecurity || true
+          docker rm -f networksecurity || true
 
       - name: Run Docker Image to serve users
         run: |
@@ -105,3 +101,8 @@ jobs:
             -e AWS_S3_BUCKET_NAME=${{ secrets.AWS_S3_BUCKET_NAME }} \
             -e DAGSHUB_USER_TOKEN=${{ secrets.DAGSHUB_TOKEN }} \
             ${{ secrets.AWS_ECR_LOGIN_URI }}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
+
+      - name: Clean previous images and containers
+        run: |
+          docker image prune -f
+          docker builder prune -f

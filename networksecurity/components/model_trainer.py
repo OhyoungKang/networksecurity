@@ -3,7 +3,6 @@
 import os
 import sys
 
-from mlflow.metrics import precision_score
 from networksecurity.exception.exception import NetworkSecurityException
 from networksecurity.logging.logger import logging
 
